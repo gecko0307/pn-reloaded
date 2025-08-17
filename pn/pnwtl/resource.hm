@@ -1,0 +1,6 @@
+// Microsoft Visual C++ generated Help ID include file.
+// Used by pn.rc
+//
+#define HIDC_OPTHELPER_BUTTON           0x80ff0444    // IDD_TOOLEDITOR
+#define HIDC_PSHELPER2_BUTTON           0x800c52d5    // IDD_PAGESETUP
+#define HIDC_PSHELPER_BUTTON            0x800c0434    // IDD_PAGESETUP

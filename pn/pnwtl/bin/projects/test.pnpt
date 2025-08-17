@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<projectConfig name="test" id="{087F8071-E230-4d0f-9B49-4C29BBE2D7A8}" ns="urn:test" icon="test.ico" helpfile="test.chm">
+	<set type="project">
+		<group name="test" description="Project Options">
+			<category name="general" description="General Options">
+				<folderPath name="outputdir" description="Output Directory" helpid="1023" />
+				<filePath name="intermediate" description="Intermediate Directory" helpid="1024" />
+			</category>
+			<category name="general2" description="Another Category">
+				<option name="cheese" description="Consume Cheese?" default="true"/>
+				<option name="add" description="Add an option?" default="false"/>
+			</category>			
+		</group>
+		<group name="test2" description="Defaults">
+			<category name="defaults" description="Project Defaults">
+				<optionlist name="configtype" description="Configuration Type" helpid="1025">
+					<value description="Makefile" value="1" />
+					<value description="Application (.exe)" value="2" />
+					<value description="Dynamic Library (.dll)" value="3" />
+					<value description="Static Library (.lib)" value="4" />
+				</optionlist>
+				<option name="browseinfo" description="Build Browser Information" helpid="2"/>
+				<text name="testname" description="Project Name" default="some text here" helpid="1"/>
+			</category>
+		</group>
+	</set>
+	<set type="file">
+		<group name="filetest" description="File Props">
+			<category name="general" description="General Options">
+				<option name="compile" description="Should Compile?" default="true"/>
+				<int name="priority" description="Compile Priority" default="5"/>
+			</category>
+		</group>
+	</set>
+</projectConfig>

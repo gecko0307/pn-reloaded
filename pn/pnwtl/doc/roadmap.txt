@@ -1,0 +1,39 @@
+PN2 RoadMap:
+
+PN is attempting to keep to a minimum of one release every two months. 
+The planned feature-implementation schedule can be seen below. This will
+be modified as and when I see fit - so don't bet money on it or anything.
+
+Work with SVN development branches (e.g. prototypes/big rewrites) are denoted with {branch-name}.
+Work completed or in-progress is shown with [proportion-developer] or [complete-developer],
+where no developer name is given it's Simon.
+
+last updated: 23/08/2009
+
+2.2 Ellington
+==============
+
+Unicode build [complete]
+Extension menu shortcut support
+
+2.4 Charles
+============
+
+Extension docking windows.
+Tag tree organisation rewrite.
+Text clips built-in management.
+Preview for scheme configurator.
+
+2.6 Monk
+=========
+
+Hex editor
+Extension file sources - ftp etc.
+
+2.8 Parker
+===========
+
+HTML preview window (ie+moz) {feature_browser_2-0-5}.
+Mini-PN - true notepad-style document-centric PN alternative build.
+Filetype filters - e.g. allow loading of .dfm files.
+??

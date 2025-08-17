@@ -1,0 +1,35 @@
+PN2 Build Instructions:
+
+Requirements:
+=============
+
+PN2 can be built using Microsoft Visual C++ 7, 7.1 or 8.
+
+For PN2 to work correctly, check that these are satisfied:
+
+WTL:
+====
+
+PN2 uses the Windows Template Library, make sure you have this!
+If you don't know what it is, or don't have it, see:
+
+http://www.pnotepad.org/articles/wtljoys.html
+
+Get WTL from:
+
+http://wtl.sf.net/
+
+Boost:
+======
+
+PN2 requires that you have boost installed and configured in your VC include 
+directories, the version currently used is Boost 1.33.1.
+
+To build Boost Python (for the pypn extension if you want it) you should 
+use the following command line from the root of the boost install:
+
+>bjam -sTOOLS=vc-7_1 --with-python --with-python-root=C:\Python24 --with-python-version=2.4 stage
+
+This assumes that your python 2.4 is installed in C:\Python24.
+
+Good Luck!

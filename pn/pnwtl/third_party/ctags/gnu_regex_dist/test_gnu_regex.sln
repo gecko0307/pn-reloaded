@@ -1,0 +1,28 @@
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "gnu_regex", "gnu_regex.vcproj", "{BAE1681D-A561-4E4B-ABD2-1A31671BD621}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "test_gnu_regex", "test_gnu_regex.vcproj", "{DDD148AD-5B22-402A-947D-9222169DED77}"
+	ProjectSection(ProjectDependencies) = postProject
+		{BAE1681D-A561-4E4B-ABD2-1A31671BD621} = {BAE1681D-A561-4E4B-ABD2-1A31671BD621}
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{BAE1681D-A561-4E4B-ABD2-1A31671BD621}.Debug|Win32.ActiveCfg = Debug|Win32
+		{BAE1681D-A561-4E4B-ABD2-1A31671BD621}.Debug|Win32.Build.0 = Debug|Win32
+		{BAE1681D-A561-4E4B-ABD2-1A31671BD621}.Release|Win32.ActiveCfg = Release|Win32
+		{BAE1681D-A561-4E4B-ABD2-1A31671BD621}.Release|Win32.Build.0 = Release|Win32
+		{DDD148AD-5B22-402A-947D-9222169DED77}.Debug|Win32.ActiveCfg = Debug|Win32
+		{DDD148AD-5B22-402A-947D-9222169DED77}.Debug|Win32.Build.0 = Debug|Win32
+		{DDD148AD-5B22-402A-947D-9222169DED77}.Release|Win32.ActiveCfg = Release|Win32
+		{DDD148AD-5B22-402A-947D-9222169DED77}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

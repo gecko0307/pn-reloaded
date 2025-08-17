@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="Windows-1252"?>
+<VisualStudioPropertySheet
+	ProjectType="Visual C++"
+	Version="8.00"
+	Name="common"
+	>
+	<Tool
+		Name="VCCLCompilerTool"
+		AdditionalIncludeDirectories="&quot;$(SolutionDir)..\..\lib\wtlsvn\include&quot;;&quot;$(SolutionDir)..\..\lib\boost_1_42_0&quot;"
+		PreprocessorDefinitions="_BIND_TO_CURRENT_CRT_VERSION"
+	/>
+	<Tool
+		Name="VCResourceCompilerTool"
+		AdditionalIncludeDirectories="$(SolutionDir)..\..\lib\wtlsvn\include"
+	/>
+	<UserMacro
+		Name="BoostFileVer"
+		Value="1_42"
+	/>
+</VisualStudioPropertySheet>

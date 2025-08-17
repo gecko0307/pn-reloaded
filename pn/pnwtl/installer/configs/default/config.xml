@@ -1,0 +1,4 @@
+<config distribution="installer">
+	<extension path="ctagsnavigator.dll"/>
+	<extension path="customscheme.dll"/>
+</config>

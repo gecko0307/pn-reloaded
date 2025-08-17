@@ -1,0 +1,328 @@
+<?xml version="1.0"?>
+<project name="pn" default="deploy" basedir=".">
+
+	<target name="svnvar">
+		<ifnot test="${property::exists('svn.revision')}">
+			<property name="git.path" value="" if="${property::exists('git.path') == false}"/>
+			
+			<echo message="Retrieving git revision number"/>
+			<property name="svn.revision" value="0"/>
+			<exec
+				program="cmd"
+				commandline='/C ${git.path}git rev-list --count HEAD'
+				output="_revision.txt"
+				failonerror="false"/>
+			<loadfile file="_revision.txt" property="svn.revision" />
+			<property name="svn.revision" value="${string::trim(svn.revision)}"/>
+		</ifnot>
+		<echo message="Using git commit number: ${svn.revision}"/>
+	</target>
+	
+	<target name="build">
+		<property name="devenv.path" value="devenv.com" if="${property::exists('devenv.path') == false}"/>
+		<exec 
+			program="${devenv.path}"
+			commandline='pn.sln /Clean Release'
+			output="build.log"/>
+		
+		<exec 
+			program="${devenv.path}"
+			commandline='pn.sln /Build Release'
+			output="build.log">
+			<environment>
+				<variable name="SVNREV" value="/DPN_BUILD=${svn.revision}"/>
+			</environment>
+		</exec>
+		
+		<call target="checkpnmanifest" />
+		<call target="test" />
+		<call target="buildlanguagedlls" />
+	</target>
+
+	<target name="vars" depends="svnvar">
+		<property name="deployver" value="${ver}.${svn.revision}"/>
+		<property name="compactver" value="${string::replace(deployver, '.', '')}"/>
+		<property name="distdir" value="..\dist\${deployver}"/>
+		
+		<echo message="${deployver} (${compactver})"/>
+		
+		<mkdir dir="${distdir}"/>
+	</target>
+
+	<!-- Deploy PN -->
+	<target name="deploy" depends="vars build pypn installers sdk">
+	</target>
+	
+	<!-- Build installers -->
+	<target name="installers" depends="vars">
+		<exec
+			program="c:\program files (x86)\inno setup 5\iscc"
+			commandline='pn2_translated.iss /d"PNVersion=${deployver}"'
+			output="_iscc.log"
+			workingdir="installer" />
+			
+		<copy file="installer\output\pnsetuptrans.exe" tofile="${distdir}\pn${compactver}_multilang.exe" overwrite="true"/>
+			
+		<call target="zip" />
+	</target>
+	
+	<target name="deployzip" depends="vars">		
+		<call target="zip" />
+	</target>
+	
+	<target name="zip">
+		<zip zipfile="${distdir}\pn${compactver}.zip">
+			<fileset basedir="bin">
+				<include name="libexpatw.dll"/>
+				<include name="scilexer.dll"/>
+				<include name="pnse.dll"/>
+				<include name="dbghelp.dll"/>
+				<include name="customscheme.dll" />
+				<include name="pn.exe"/>
+				<include name="ctags.exe"/>
+				<include name="schemes/*.scheme"/>
+				<include name="schemes/extmap.dat"/>
+				<include name="schemes/*.api"/>
+				<include name="presets/*.xml"/>
+				<include name="ctags/*.*"/>
+				<include name="ctagsnavigator.dll"/>
+			</fileset>
+			<fileset basedir="installer\reqfiles">
+				<include name="*"/>
+			</fileset>
+			<fileset basedir="doc">
+				<include name="credits.txt"/>
+				<include name="history.txt"/>
+				<include name="license.txt"/>
+				<include name="pcre-license.txt"/>
+				<include name="ctags_README"/>
+				<include name="ctags_COPYING"/>
+				<include name="license.html"/>
+			</fileset>
+			<fileset basedir="doc\help">
+				<include name="pn2.chm"/>
+			</fileset>
+			<fileset basedir="bin\clips" prefix="clips">
+				<include name="*\*.clips"/>
+			</fileset>
+			<fileset basedir="installer\configs\default">
+				<include name="config.xml"/>
+			</fileset>
+		</zip>
+		
+		<zip zipfile="${distdir}\portable-pn${compactver}.zip">
+			<fileset basedir="bin">
+				<include name="libexpatw.dll"/>
+				<include name="scilexer.dll"/>
+				<include name="pnse.dll"/>
+				<include name="dbghelp.dll"/>
+				<include name="customscheme.dll" />
+				<include name="pn.exe"/>
+				<include name="ctags.exe"/>
+				<include name="schemes/*.scheme"/>
+				<include name="schemes/extmap.dat"/>
+				<include name="schemes/*.api"/>
+				<include name="presets/*.xml"/>
+				<include name="ctags/*.*"/>
+				<include name="ctagsnavigator.dll"/>
+			</fileset>
+			<fileset basedir="installer\reqfiles">
+				<include name="*"/>
+			</fileset>
+			<fileset basedir="doc">
+				<include name="credits.txt"/>
+				<include name="history.txt"/>
+				<include name="license.txt"/>
+				<include name="pcre-license.txt"/>
+				<include name="ctags_README"/>
+				<include name="ctags_COPYING"/>
+				<include name="license.html"/>
+			</fileset>
+			<fileset basedir="doc\help">
+				<include name="pn2.chm"/>
+			</fileset>
+			<fileset basedir="bin\clips" prefix="clips">
+				<include name="*\*.clips"/>
+			</fileset>
+			<fileset basedir="installer\configs\portable">
+				<include name="config.xml"/>
+			</fileset>
+		</zip>
+		
+		<zip zipfile="${distdir}\pdb${compactver}.zip">
+			<fileset basedir="bin">
+				<include name="**/*.pdb"/>
+				<exclude name="pypn.pdb"/>
+			</fileset>
+		</zip>
+		
+		<zip zipfile="${distdir}\translations${compactver}.zip">
+			<fileset basedir="bin">
+				<include name="pnlang_*.dll"/>
+			</fileset>
+		</zip>
+		
+		<zip zipfile="${distdir}\translatetools${compactver}.zip">
+			<fileset>
+				<include name="bin\pnlang.dll"/>
+				<include name="translations\*.pot"/>
+				<include name="translations\*.po"/>
+				<include name="tools\ResText\*.*"/>
+			</fileset>
+		</zip>
+	</target>
+	
+	<!-- Build PyPN -->
+	<target name="pypn">
+		<!-- Python 3.4 -->
+		<echo message="Building for Python 3.4"/>
+		<property name="pyver" value="py34"/>
+		
+		<property name="devenv.path" value="devenv.com" if="${property::exists('devenv.path') == false}"/>
+		
+		<exec
+			program="${devenv.path}"
+			commandline='pn.sln /Project pypn /ProjectConfig Release /Rebuild'
+			output="pypn-3.4.log">
+			<environment>
+				<variable name="PYTHONINCDIR" value="C:\Python34\include"/>
+				<variable name="PYTHONLIBDIR" value="..\lib\boost-python-3.4"/>
+				<variable name="SVNREV" value="/DPN_BUILD=${svn.revision}"/>
+			</environment>
+		</exec>
+		<copy file="lib\boost-python-3.4\boost_python-vc120-mt-1_57.dll" todir="bin" overwrite="true"/>
+		
+		<property name="pywrongdep" value="python27"/>
+		<call target="checkpypndeps"/>
+		
+		<call target="deploypypn"/>
+	</target>
+	
+	<!-- Deploy PyPN -->
+	<target name="deploypypn" depends="vars">
+		<mkdir dir="${distdir}"/>
+		
+		<zip zipfile="${distdir}\pypn-${deployver}-${pyver}.zip">
+			<fileset basedir="bin">
+				<include name="pypn.dll"/>
+				<include name="boost_py*.dll"/>
+				<exclude name="*gd*.dll"/>
+			</fileset>
+			<fileset basedir="pypn\scripts3k">
+				<include name="**/*.py"/>
+			</fileset>
+		</zip>
+		
+		<zip zipfile="${distdir}\pdb-${deployver}-${pyver}.zip">
+			<fileset basedir="bin">
+				<include name="**/pypn.pdb"/>
+			</fileset>
+		</zip>
+	</target>
+	
+	<target name="sdk" depends="vars">
+		<mkdir dir="${distdir}"/>
+		
+		<zip zipfile="${distdir}\sdk-${ver}.zip">
+			<fileset>
+				<include name="extiface.h"/>
+				<include name="allocator.h"/>
+				<include name="pnextstring.h"/>
+				<include name="IOptions.h"/>
+			</fileset>
+			<fileset basedir="sdk\template" prefix="template">
+				<include name="*.cpp"/>
+				<include name="*.h"/>
+				<include name="*.def"/>
+				<include name="*.vcproj"/>
+				<include name="*.sln"/>
+			</fileset>
+			<fileset basedir="sdk\demo" prefix="demo">
+				<include name="*.cpp"/>
+				<include name="*.h"/>
+				<include name="*.def"/>
+				<include name="*.vcproj"/>
+				<include name="*.sln"/>
+			</fileset>
+		</zip>
+	</target>
+	
+	<target name="checkpypndeps">
+		<delete file="bin\dep.txt" failonerror="false"/>
+		<exec
+			program="depends"
+			commandline="/c /ot:bin\dep.txt bin\pypn.dll" 
+			resultproperty="depresult"
+			failonerror="false"/>
+		<fail if="${int::parse(depresult) > 65536}" message="Failure code indicates depends error"/>
+		<loadfile file="bin\dep.txt" property="deps"/>
+		<fail if="${string::contains(string::to-lower(deps), pywrongdep)}" message="PyPN mistakenly depends on ${pywrongdep}"/>
+	</target>
+	
+	<target name="checkpnmanifest">
+		<exec
+			program="mt"
+			commandline="-inputresource:bin\pn.exe -out:bin\pndepcheck.manifest"/>
+		<loadfile file="bin\pndepcheck.manifest" property="pndeps"/>
+		<fail if="${string::contains(string::to-lower(pndeps), 'debug')}" message="PN dependency on debug dll"/>
+	</target>
+	
+	<target name="buildlanguagedlls">
+		<property name="svn.revision" value="0" if="${property::exists('svn.revision') == false}"/>
+		
+		<delete>
+			<fileset>
+				<include name="bin\pnlang_*.dll"/>
+			</fileset>
+		</delete>
+		
+		<foreach item="File" property="filename">
+			<in>
+				<items>
+					<include name="translations\*.po" />
+				</items>
+			</in>
+			<do>
+			    <echo message="apply bin\pnlang.dll bin\${path::get-file-name-without-extension(filename)}_${ver}.${svn.revision}.dll ${filename}"/>
+				<exec
+					program="tools\ResText\ResText.exe"
+					commandline="apply bin\pnlang.dll bin\${path::get-file-name-without-extension(filename)}_${ver}.${svn.revision}.dll ${filename}"/>
+			</do>
+		</foreach>
+	</target>
+	
+	<target name="updatepotfile">
+		<exec
+		    program="tools\ResText\ResText.exe"
+			commandline="extract bin\pnlang.dll translations\pnlang_2057_en-GB.pot"/>
+	</target>
+	
+	<target name="updatepofiles" depends="updatepotfile">
+		<property name="msgmerge" value="c:\Program Files (x86)\Poedit\gettexttools\bin\msgmerge.exe"/>
+		<foreach item="File" property="filename">
+			<in>
+				<items>
+					<include name="translations\*.po" />
+				</items>
+			</in>
+			<do>
+				<exec
+					program="${msgmerge}"
+					commandline="-o translations\temp.po ${filename} translations\pnlang_2057_en-GB.pot"/>
+				<copy file="translations\temp.po" tofile="${filename}" overwrite="true"/>
+			</do>
+		</foreach>
+		<delete file="translations\temp.po" failonerror="false"/>
+	</target>
+	
+	<target name="updatepseudoloc" depends="updatepofiles">
+		<exec
+			program="C:\Program Files (x86)\Translate Toolkit\podebug.exe"
+			commandline="translations\pnlang_2057_en-GB.pot -o translations\pnlang_1281_qps-ploc.po --rewrite=unicode"/>
+	</target>
+	
+	<target name="test">
+		<exec program="bin\tests.exe"/>
+	</target>
+	
+</project>
