@@ -401,6 +401,9 @@
     <ClCompile Include="scriptview.cpp">
       <Filter>Extensions</Filter>
     </ClCompile>
+    <ClCompile Include="ini.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="afiles.h">
@@ -929,6 +932,9 @@
       <Filter>Extensions</Filter>
     </ClInclude>
     <ClInclude Include="include\liquidmetal.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ini.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>

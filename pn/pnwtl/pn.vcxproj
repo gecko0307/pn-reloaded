@@ -188,6 +188,11 @@
     <ClCompile Include="extapp.cpp" />
     <ClCompile Include="FileAssoc.cpp" />
     <ClCompile Include="findinfiles.cpp" />
+    <ClCompile Include="ini.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</ExcludedFromBuild>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+      </PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="jumpto.cpp" />
     <ClCompile Include="OptionsIni.cpp" />
     <ClCompile Include="OptionsManager.cpp" />
@@ -328,6 +333,9 @@
     <ClInclude Include="folderadder.h" />
     <ClInclude Include="ifilesource.h" />
     <ClInclude Include="include\liquidmetal.h" />
+    <ClInclude Include="ini.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="IOptions.h" />
     <ClInclude Include="jumpto.h" />
     <ClInclude Include="jumptointerface.h" />

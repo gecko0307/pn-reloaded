@@ -60,6 +60,9 @@ pnwtl/bin/pypn
 pnwtl/bin/scripts
 pnwtl/bin/dep.txt
 pnwtl/bin/pndepcheck.manifest
+pnwtl/bin/*.iobj
+pnwtl/bin/*.ipdb
+pnwtl/bin/settings
 
 # Visual C++ cache files
 ipch/
@@ -93,8 +96,9 @@ pnse_i.c
 pnse_p.c
 pnse.lib
 
-*.dll
 *.exp
 
 dist
 pnwtl/translations/temp.po
+
+pnwtl/.vs
