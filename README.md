@@ -5,6 +5,7 @@ A lightweight and fast text editor for Windows, fork of Simon Steele's [Programm
 Changes from original PN:
 - Port to modern Visual Studio, fix some compatibility issues;
 - Add WTL to the repo;
+- *.exe files are now executed by double clicking in the file browser and project view;
 - Add GLSL and WGSL syntax highlighting schemes;
 - Add files necessary to build CHM help file using HTML Help Workshop.
 

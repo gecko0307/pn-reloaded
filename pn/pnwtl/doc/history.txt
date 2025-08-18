@@ -1,4 +1,12 @@
 ========================================
+Release Name: 2.6
+Build: 2.6, Version Label: Reloaded
+========================================
+New features:
+- *.exe files are now executed by double clicking in the file browser and project view;
+- Update GLSL scheme with new types and keywords.
+
+========================================
 Release Name: 2.5
 Build: 2.5, Version Label: Reloaded
 ========================================
