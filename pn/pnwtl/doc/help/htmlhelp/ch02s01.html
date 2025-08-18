@@ -1,0 +1,36 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Capture compiler output</title><link rel="stylesheet" href="htmlhelp.css" type="text/css"><meta name="generator" content="DocBook XSL Stylesheets V1.65.1"><link rel="home" href="index.html" title="Programmer's Notepad: Help"><link rel="up" href="ch02.html" title="How To"><link rel="previous" href="ch02.html" title="How To"><link rel="next" href="ch02s02.html" title="Parse unsupported tool output"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="id729696"></a>Capture compiler output</h2></div></div><div></div></div><p>This mini-guide will show you how to capture the output of
+		a tool such as a compiler or linker.</p><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id729709"></a>Basic Settings</h3></div></div><div></div></div><p>Open up the Options dialog from the Tools menu, and select
+			the Tools tab. The drop-down box at the top of the tools page 
+			allows you to select a scheme that the tool should be available
+			with. You can also select "(None - Global Tools)" if you wish 
+			the tool to be available everywhere in PN.</p><p>Click "Add" to add a new tool. A new window will pop up 
+			allowing you to enter the details of the tool. The first thing 
+			to choose is the name of the tool, something like "Compile".</p><p>Next up is the "Command" for the tool, here you select the
+			program that the tool will run, for example "cl.exe". Don't put
+			any parameters here, they go further down!</p><p>The "Folder" field allows you to set the current directory
+			for when the tool runs. It is most often a good idea to set this
+			to the folder of the current file you are working on, so put in
+			<tt class="code">%d</tt>.</p><p>Put the parameters for your tool in the "Parameters" field!
+			You can use any of the shortcuts shown in the "Special Symbols"
+			box at the bottom of the page, for example <tt class="code">%f</tt> for 
+			the filename of the current file or <tt class="code">$(ProjectPath)</tt> 
+			for the path to the current project file. If you just want to 
+			pass in the full current filename, you should use <tt class="code">"%d%f"</tt></p><p>You can choose a shortcut key to use to run your tool, 
+			just put your cursor in the shorcut box and press the key combination
+			you want, e.g.  or .</p><p>It's often useful to save the current	or all files before 
+			running a tool. The Save option allows you to select what files 
+			should be saved when running the tool.</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="id729764"></a>Capturing the tool output</h3></div></div><div></div></div><p>Select the second tab, titled "Console I/O". This tab 
+			allows you define how PN will interact with your tool.</p><p>To capture the output from your tool, simply select the 
+			"Capture Output?" option. You can then choose whether you want
+			the output to be placed in the global output window (the main,
+			docking output window) or in an output pane attached to the
+			current document. Finally, you can choose whether to clear the
+			output window before running the tool.</p><p>PN allows you to click on errors and warnings in your 
+			tool output and jump to the relevant parts of source file. It 
+			does this by parsing the output from the tool and finding text
+			such as <tt class="code">"myfile.cpp:21: Error..."</tt>. PN has built in support for 
+			several tools, to try this support leave the "Use the built-in
+			error parser" option checked and run your tool. If you find 
+			that PN does not pick up errors from your tool then you will 
+			need a custom pattern. To see how to use custom patterns to 
+			match errors and warnings see <a href="ch02s02.html" title="Parse unsupported tool output">here.</a></p></div></div></body></html>

@@ -1,0 +1,12 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>To Extend an Existing Text Clip File</title><link rel="stylesheet" href="htmlhelp.css" type="text/css"><meta name="generator" content="DocBook XSL Stylesheets V1.65.1"><link rel="home" href="index.html" title="Programmer's Notepad: Help"><link rel="up" href="ch05.html" title="Text Clips"><link rel="previous" href="ch05s02.html" title="Manually Create a Text Clip File"><link rel="next" href="ch06.html" title="Advanced"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="id731472"></a>To Extend an Existing Text Clip File</h2></div></div><div></div></div><p>To add a new clip to an existing library:</p><div class="orderedlist"><ol type="1"><li><p>Open the desired Text Clip file in Programmer's Notepad.</p></li><li><p>Create a new line following one of the &lt;/clip&gt; tags.
+				Note that clips appear in the same order in which they exist in the
+				Text Clips file.</p></li><li><p>Insert a new &lt;clip&gt; tag and use the name attribute to
+				identify your new text clip. Example: &lt;clip name=&#8221;my first
+				clip&#8221;&gt;</p></li><li><p>Although not mandatory, to ensure proper parsing of your clip
+				you should embed your text clip inside a &lt;![CDATA[ ]]&gt; tag.
+				Your text clip is inserted between of the inner square brackets and
+				may include line feeds, tabs, angle brackets, and other formatting
+				characters. Example: &lt;![CDATA[This is my first text
+				clip!]]&gt;</p></li><li><p>Complete the text clip by including the closing &lt;/clip&gt;
+				tag.</p></li><li><p>Save the file. You must restart Programmer's Notepad before
+				your edit will take effect.</p></li></ol></div></div></body></html>
