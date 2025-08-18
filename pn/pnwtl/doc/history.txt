@@ -1,4 +1,60 @@
 ========================================
+Release Name: 2.5
+Build: 2.5, Version Label: Reloaded
+========================================
+
+Programmer's Notepad was forked as Programmer's Notepad Reloaded.
+
+Changes from original PN:
+- Port to modern Visual Studio, fix some compatibility issues;
+- Add WTL to the repo;
+- Add GLSL and WGSL schemes.
+
+========================================
+Release Name: 2.4.2
+Build: 2.4.2, Version Label: Duke
+========================================
+
+A minor bugfix release from 2.4, this becomes the new stable release of Duke.
+
+What's new in 2.4.2?
+------------------------------------------
+
+1) Fuzzy matching in "Jump to" dialog, e.g. MTM for MyTestMethod
+2) New style presets
+3) New translations, some minor translation updates
+4) Delay Windows shutdown for file save
+5) Improved find dialog resizing
+6) Python Scripting Extension (PyPN) included as optional component in installer
+
+Bug Fixes:
+----------
+1) Fixes to XML/HTML tag completion
+2) UTF-8 Replace All and UTF-8 character code improvements for Regex search
+3) Fix for script recording due to Scintilla bug
+
+========================================
+Release Name: 2.4
+Build: 2.4, Version Label: Duke
+========================================
+
+What's new in 2.4?
+------------------------------------------
+
+1) Fuzzy matching in "Jump to" dialog, e.g. MTM for MyTestMethod
+2) New style presets
+3) New translations
+4) Delay Windows shutdown for file save
+5) Improved find dialog resizing
+6) Python Scripting Extension (PyPN) included as optional component in installer
+
+Bug Fixes:
+----------
+1) Fixes to XML/HTML tag completion
+2) UTF-8 Replace All and UTF-8 character code improvements for Regex search
+3) Fix for script recording due to Scintilla bug
+
+========================================
 Release Name: 2.3
 Build: 2.3, Version Label: Charles
 ========================================

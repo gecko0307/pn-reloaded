@@ -1,11 +1,12 @@
 [OPTIONS]
 Compatibility=1.1 or later
-Compiled file=help.chm
+Compiled file=pn2.chm
 Contents file=toc.hhc
 Display compile progress=No
 Index file=Index.hhk
+Title=Programmer's Notepad Reloaded: Help
 Language=0x409 English (United States)
-Default topic=htmlhelp/index.html
+Default topic=html/index.html
 Full-text search=Yes
 Auto Index=Yes
 
