@@ -2227,6 +2227,10 @@ bool CChildFrame::PNOpenFile(LPCTSTR pathname, Scheme* pScheme, EPNEncoding enco
 		HandleFailedFileOp(pathname, true);
 	}
 	
+	//TODO
+	//EditorConfigSettings settings = GetEditorConfigSettings(pathname);
+	//ApplyEditorConfigToScintilla(GetTextView(), settings);
+	
 	// Loading a file may have changed the line endings/text encoding of the
 	// document, so we update the menu...
 	UpdateMenu();

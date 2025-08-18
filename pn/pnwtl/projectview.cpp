@@ -2499,7 +2499,31 @@ LRESULT CProjectDocker::OnTreeNotify(int /*idCtrl*/, LPNMHDR pnmh, BOOL& bHandle
 		File* file = m_view.GetSelectedFile();
 		if(file != NULL)
 		{
-			if( !g_Context.m_frame->CheckAlreadyOpen(file->GetFileName(), eSwitch) )
+			CString strPath = file->GetFileName();
+			strPath.MakeLower();
+			if (strPath.Right(4) == _T(".exe"))
+			{
+				TCHAR dir[MAX_PATH+1] = {0};
+				_tcscpy_s(dir, file->GetFileName());
+				PathRemoveFileSpec(dir);
+
+				SHELLEXECUTEINFO sei = { sizeof(sei) };
+				sei.fMask = SEE_MASK_NOCLOSEPROCESS;
+				sei.lpVerb = _T("open");
+				sei.lpFile = file->GetFileName();
+				sei.lpDirectory = dir;
+				sei.nShow = SW_SHOWNORMAL;
+
+				if (ShellExecuteEx(&sei))
+				{
+					CloseHandle(sei.hProcess);
+				}
+				else
+				{
+					::MessageBox(NULL, _T("Failed to execute"), _T("Error"), MB_ICONERROR);
+				}
+			}
+			else if( !g_Context.m_frame->CheckAlreadyOpen(file->GetFileName(), eSwitch) )
 			{
 				g_Context.m_frame->Open(file->GetFileName(), true);
 				HWND hWndEditor = GetCurrentEditor();

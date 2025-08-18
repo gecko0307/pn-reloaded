@@ -129,8 +129,32 @@ LRESULT CBrowseDocker::OnTreeDblClick(int /*idCtrl*/, LPNMHDR pnmh, BOOL& /*bHan
 		// Check it's not a folder
 		::SHGetFileInfo((LPCTSTR)(LPITEMIDLIST)pidl, 0, &sfi, sizeof(SHFILEINFO), SHGFI_PIDL | SHGFI_ATTRIBUTES);
 		if ((sfi.dwAttributes & SFGAO_FOLDER) == 0)
-		{		
-			if(!g_Context.m_frame->CheckAlreadyOpen(path, eSwitch))
+		{
+			CString strPath = path;
+			strPath.MakeLower();
+			if (strPath.Right(4) == _T(".exe"))
+			{
+				TCHAR dir[MAX_PATH+1] = {0};
+				_tcscpy_s(dir, path);
+				PathRemoveFileSpec(dir);
+
+				SHELLEXECUTEINFO sei = { sizeof(sei) };
+				sei.fMask = SEE_MASK_NOCLOSEPROCESS;
+				sei.lpVerb = _T("open");
+				sei.lpFile = path;
+				sei.lpDirectory = dir;
+				sei.nShow = SW_SHOWNORMAL;
+
+				if (ShellExecuteEx(&sei))
+				{
+					CloseHandle(sei.hProcess);
+				}
+				else
+				{
+					::MessageBox(NULL, _T("Failed to execute"), _T("Error"), MB_ICONERROR);
+				}
+			}
+			else if(!g_Context.m_frame->CheckAlreadyOpen(path, eSwitch))
 			{
 				g_Context.m_frame->Open(path, true);
 			}
