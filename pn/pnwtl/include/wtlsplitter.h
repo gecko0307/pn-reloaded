@@ -304,9 +304,13 @@ class CWTLSplitter : public CWindowImpl< CWTLSplitter<T> >
 
 		void UpdateCursor()
 		{
-			SetClassLong(m_hWnd, GCL_HCURSOR, 
-				(LONG) ::LoadCursor(NULL, (m_bHorz ? IDC_SIZENS : IDC_SIZEWE))
-			);
+			#ifdef _WIN64
+				SetClassLong(m_hWnd, GCLP_HCURSOR,
+					(LONG) ::LoadCursor(NULL, (m_bHorz ? IDC_SIZENS : IDC_SIZEWE)));
+			#else
+				SetClassLong(m_hWnd, GCL_HCURSOR, 
+					(LONG) ::LoadCursor(NULL, (m_bHorz ? IDC_SIZENS : IDC_SIZEWE)));
+			#endif
 		}
 
 	// Message Handlers:
