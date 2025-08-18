@@ -47,6 +47,7 @@
 .ini=properties
 .java=java
 .js=javascript
+.json=javascript
 .lisp=lisp
 .lsp=lisp
 .lua=lua

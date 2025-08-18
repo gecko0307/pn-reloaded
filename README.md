@@ -7,6 +7,7 @@ Changes from original PN:
 - Add WTL to the repo;
 - *.exe files are now executed by double clicking in the file browser and project view;
 - Add GLSL and WGSL syntax highlighting schemes;
+- Support for JSON files (treated as JavaScript files for syntax highlighting);
 - Add files necessary to build CHM help file using HTML Help Workshop.
 
 ## Building
