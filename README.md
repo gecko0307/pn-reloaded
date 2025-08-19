@@ -6,7 +6,7 @@ Changes from original PN:
 - Port to modern Visual Studio, fix some compatibility issues;
 - Add WTL to the repo;
 - *.exe files are now executed by double clicking in the file browser and project view;
-- Add GLSL and WGSL syntax highlighting schemes;
+- Add Haskell, GLSL, HLSL, WGSL syntax highlighting schemes;
 - Support for JSON files (treated as JavaScript files for syntax highlighting);
 - Add files necessary to build CHM help file using HTML Help Workshop.
 

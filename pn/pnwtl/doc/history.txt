@@ -4,6 +4,7 @@ Build: 2.6, Version Label: Reloaded
 ========================================
 New features:
 - *.exe files are now executed by double clicking in the file browser and project view;
+- Add Haskell and HLSL schemes;
 - Update GLSL scheme with new types and keywords;
 - Support for JSON files (treated as JavaScript files for syntax highlighting).
 
