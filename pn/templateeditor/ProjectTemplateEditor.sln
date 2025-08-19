@@ -1,21 +1,24 @@
-Microsoft Visual Studio Solution File, Format Version 8.00
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31025.194
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectTemplateEditor", "ProjectTemplateEditor.csproj", "{029A2C11-2710-423A-9E33-E2FB5EAD7047}"
-	ProjectSection(ProjectDependencies) = postProject
-	EndProjectSection
 EndProject
 Global
-	GlobalSection(SolutionConfiguration) = preSolution
-		Debug = Debug
-		Release = Release
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
-	GlobalSection(ProjectConfiguration) = postSolution
-		{029A2C11-2710-423A-9E33-E2FB5EAD7047}.Debug.ActiveCfg = Debug|.NET
-		{029A2C11-2710-423A-9E33-E2FB5EAD7047}.Debug.Build.0 = Debug|.NET
-		{029A2C11-2710-423A-9E33-E2FB5EAD7047}.Release.ActiveCfg = Release|.NET
-		{029A2C11-2710-423A-9E33-E2FB5EAD7047}.Release.Build.0 = Release|.NET
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{029A2C11-2710-423A-9E33-E2FB5EAD7047}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{029A2C11-2710-423A-9E33-E2FB5EAD7047}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{029A2C11-2710-423A-9E33-E2FB5EAD7047}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{029A2C11-2710-423A-9E33-E2FB5EAD7047}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-	EndGlobalSection
-	GlobalSection(ExtensibilityAddIns) = postSolution
+		SolutionGuid = {F26DE67D-5285-4E93-AF0F-54A2BF5A3DE0}
 	EndGlobalSection
 EndGlobal
