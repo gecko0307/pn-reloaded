@@ -1,4 +1,4 @@
-# Programmer's Notepad Reloaded
+# PN Reloaded
 
 A lightweight and fast text editor for Windows, fork of Simon Steele's [Programmer's Notepad 2](http://www.pnotepad.org/).
 
@@ -11,6 +11,7 @@ Changes from original PN:
 - *.exe files are now executed by double clicking in the file browser and project view;
 - Add Haskell, GLSL, HLSL, WGSL syntax highlighting schemes;
 - Support for JSON files (treated as JavaScript files for syntax highlighting);
+- Add Text Clip Creator and Project Template Editor to the distribution;
 - Add files necessary to build CHM help file using HTML Help Workshop.
 
 ## Building
