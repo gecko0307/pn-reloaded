@@ -2227,10 +2227,17 @@ bool CChildFrame::PNOpenFile(LPCTSTR pathname, Scheme* pScheme, EPNEncoding enco
 		HandleFailedFileOp(pathname, true);
 	}
 	
-	//TODO
-	//EditorConfigSettings settings = GetEditorConfigSettings(pathname);
-	//ApplyEditorConfigToScintilla(GetTextView(), settings);
-	
+	CTextView* pView = GetTextView();
+	if (pView)
+	{
+		bool useTabs = pView->DetectIntentationTabs();
+		pView->SPerform(SCI_SETUSETABS, useTabs ? TRUE : FALSE, 0);
+		
+		//TODO: .editorconfig support
+		//EditorConfigSettings settings = GetEditorConfigSettings(pathname);
+		//ApplyEditorConfigToScintilla(pView, settings);
+	}
+
 	// Loading a file may have changed the line endings/text encoding of the
 	// document, so we update the menu...
 	UpdateMenu();

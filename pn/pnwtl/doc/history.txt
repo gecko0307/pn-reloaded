@@ -4,6 +4,7 @@ Build: 2.6, Version Label: Reloaded
 ========================================
 New features:
 - Files with unknown encoding are now loaded as UTF-8;
+- Autodetection of intentation style (tabs/spaces) from file contents;
 - *.exe files are now executed by double clicking in the file browser and project view;
 - Add Haskell and HLSL schemes;
 - Update GLSL scheme with new types and keywords;

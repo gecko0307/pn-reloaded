@@ -6,6 +6,7 @@ Changes from original PN:
 - Port to modern Visual Studio, fix some compatibility issues;
 - Add WTL to the repo;
 - Files with unknown encoding are now loaded as UTF-8;
+- Autodetection of intentation style (tabs/spaces) from file contents;
 - *.exe files are now executed by double clicking in the file browser and project view;
 - Add Haskell, GLSL, HLSL, WGSL syntax highlighting schemes;
 - Support for JSON files (treated as JavaScript files for syntax highlighting);

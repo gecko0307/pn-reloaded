@@ -186,6 +186,40 @@ int determineEncoding(unsigned char* pBuf, int nLen, EPNEncoding& eEncoding) {
 	return nRet;
 }
 
+bool CTextView::DetectIntentationTabs()
+{
+	int totalLines = GetLineCount();
+	int maxLines = 200;
+	int linesToCheck = min(totalLines, maxLines);
+	int tabLines = 0;
+	int spaceLines = 0;
+
+	char lineBuf[1024];
+	
+	for (int i = 0; i < linesToCheck; i++)
+	{
+		int len = GetLine(i, lineBuf);
+        	if (len <= 0) continue;
+
+		CString line(lineBuf, len); // создаём CString из считанной длины
+        	if (line.IsEmpty())
+            		continue;
+
+		bool hasTab = false;
+		bool hasSpace = false;
+
+		if (lineBuf[0] == '\t') hasTab = true;
+            	else if (lineBuf[0] == ' ') hasSpace = true;
+
+        	if (hasTab)
+            		tabLines++;
+       		else if (hasSpace)
+            		spaceLines++;
+	}
+	
+	return tabLines > spaceLines;
+}
+
 bool CTextView::OpenFile(LPCTSTR filename, EPNEncoding encoding)
 {
 	// We don't want smart start if we're opening a file...
@@ -295,6 +329,7 @@ bool CTextView::OpenFile(LPCTSTR filename, EPNEncoding encoding)
 		SPerform(SCI_SETUNDOCOLLECTION, 1);
 
 		SetEOLMode(endings);
+
 		SPerform(SCI_SETSAVEPOINT);
 
 		SetLineNumberChars();
@@ -366,7 +401,7 @@ void CTextView::Revert(LPCTSTR filename)
 			
 			SetSel(lastPos, lastPos);
 
-            int curTop = GetFirstVisibleLine();
+			int curTop = GetFirstVisibleLine();
 			int lineTop = VisibleFromDocLine( scrollPos );
 			LineScroll(0, lineTop - curTop);
 			Invalidate();

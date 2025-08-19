@@ -127,6 +127,7 @@ public:
 
 	void InsertClip(const TextClips::Clip* clip);
 
+	bool CTextView::DetectIntentationTabs();
 private:
 
 	// Message Handlers
