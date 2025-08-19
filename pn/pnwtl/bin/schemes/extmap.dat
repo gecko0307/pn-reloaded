@@ -44,12 +44,14 @@
 .html=Web
 .htm=Web
 .hlsl=hlsl
+.hs=haskell
 .idl=cpp
 .inf=properties
 .ini=properties
 .java=java
 .js=javascript
 .json=javascript
+.lhs=haskell
 .lisp=lisp
 .lsp=lisp
 .lua=lua
