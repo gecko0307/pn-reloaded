@@ -243,8 +243,6 @@ bool CTextView::OpenFile(LPCTSTR filename, EPNEncoding encoding)
 		std::vector<char> data(useBlockSize);
 		int lenFile = file.Read(&data[0], useBlockSize);
 
-		if(encoding == eUnknown) encoding = eUtf8NoBOM;
-
 		///See if there's an encoding specified or not...
 		if(encoding == eUnknown)
 		{
@@ -254,6 +252,9 @@ bool CTextView::OpenFile(LPCTSTR filename, EPNEncoding encoding)
 		{
 			m_encType = encoding;
 		}
+		
+		// Open ASCII files as UTF-8
+		if (m_encType == eUnknown) m_encType = eUtf8NoBOM;
 
 		EPNSaveFormat endings = determineLineEndings(reinterpret_cast<unsigned char*>(&data[0]), lenFile, m_encType);
 
