@@ -93,7 +93,8 @@ public:
 			OLinePaddingBottom			= 38,
 			ODefaultEncoding			= 39,
 			OMultiByteCodePage			= 40,
-			OPTION_COUNT				= 41
+			OAutodetectIndentation		= 41,
+			OPTION_COUNT				= 42
 		} ECachedOption;
 
 		/// Set a bool value

@@ -42,6 +42,7 @@ void COptionsPageEditDefaults::OnOK()
 	options.SetCached(Options::OVisibleWhiteSpace, m_bWhiteSpace);
 	options.SetCached(Options::OMultiByteCodePage, m_AnsiCodePage);
 	options.SetCached(Options::ODefaultEncoding, m_DefaultEncoding);
+	options.SetCached(Options::OAutodetectIndentation, m_AutodetectIndentation);
 }
 
 void COptionsPageEditDefaults::OnInitialise()
@@ -55,6 +56,7 @@ void COptionsPageEditDefaults::OnInitialise()
 	m_bWhiteSpace	= OPTIONS->GetCached(Options::OVisibleWhiteSpace);
 	m_AnsiCodePage  = (ECodePage)OPTIONS->GetCached(Options::OMultiByteCodePage);
 	m_DefaultEncoding = (EPNEncoding)OPTIONS->GetCached(Options::ODefaultEncoding);
+	m_AutodetectIndentation = OPTIONS->GetCached(Options::OAutodetectIndentation);
 
 	CComboBox cb(GetDlgItem(IDC_OPT_LECOMBO));
 	for(int i = 0; i < cb.GetCount(); i++)

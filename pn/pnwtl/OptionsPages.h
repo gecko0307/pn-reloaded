@@ -37,12 +37,13 @@ class COptionsPageEditDefaults : public COptionsPageImpl<COptionsPageEditDefault
 		enum { IDD = IDD_PAGE_EDITDEFS };
 
 		BEGIN_DDX_MAP(COptionsPageEditDefaults)
-			DDX_CHECK(IDC_OPT_USETABSCHECK,		m_bUseTabs)
-			DDX_CHECK(IDC_OPT_LINENOSCHECK,		m_bLineNos)
-			DDX_CHECK(IDC_OPT_WORDWRAPCHECK,	m_bWrap)
-			DDX_UINT(IDC_OPT_TABWIDTHEDIT,		m_iTabWidth)
-			DDX_CHECK(IDC_OPT_LINEENDINGSCHECK, m_bLineEndings)
-			DDX_CHECK(IDC_OPT_WHITESPACECHECK,	m_bWhiteSpace)
+			DDX_CHECK(IDC_OPT_USETABSCHECK,				m_bUseTabs)
+			DDX_CHECK(IDC_OPT_LINENOSCHECK,				m_bLineNos)
+			DDX_CHECK(IDC_OPT_WORDWRAPCHECK,			m_bWrap)
+			DDX_UINT(IDC_OPT_TABWIDTHEDIT,				m_iTabWidth)
+			DDX_CHECK(IDC_OPT_LINEENDINGSCHECK,			m_bLineEndings)
+			DDX_CHECK(IDC_OPT_WHITESPACECHECK,			m_bWhiteSpace)
+			DDX_CHECK(IDC_OPT_AUTODETECTINDENTATION,	m_AutodetectIndentation)
 		END_DDX_MAP()
 
 		virtual void OnOK();
@@ -61,6 +62,7 @@ class COptionsPageEditDefaults : public COptionsPageImpl<COptionsPageEditDefault
 		EPNSaveFormat	m_SaveFormat;
 		ECodePage		m_AnsiCodePage;
 		EPNEncoding		m_DefaultEncoding;
+		BOOL			m_AutodetectIndentation;
 
 		COptionsBlockHeader m_defaultsHeader;
 };

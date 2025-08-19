@@ -633,6 +633,8 @@
 #define IDC_LINEPADDING_STATIC          1171
 #define IDC_EXTLINK                     1172
 #define IDC_ENABLEEXPLORERCONTEXT       1173
+#define IDC_CHECK2                      1174
+#define IDC_OPT_AUTODETECTINDENTATION   1175
 #define IDS_SHORTCUTS_SCRIPTS           1800
 #define IDS_HDR_FILETYPES_MATCH         1801
 #define IDS_FILEASSOC_BADCHARS          1802
@@ -715,7 +717,6 @@
 #define ID_REGEXP_0ORMOREMATCHES        32847
 #define ID_REGEXP_1ORMOREMATCHES        32848
 #define ID_REGEXP_GROUP                 32849
-#define ID_EDIT_DELETE                  32862
 #define ID_EDIT_INDENT                  32863
 #define ID_EDIT_UNINDENT                32864
 #define ID_FILE_SAVEALL                 32865
@@ -871,7 +872,7 @@
 #define _APS_NO_MFC                     1
 #define _APS_NEXT_RESOURCE_VALUE        372
 #define _APS_NEXT_COMMAND_VALUE         33161
-#define _APS_NEXT_CONTROL_VALUE         1174
+#define _APS_NEXT_CONTROL_VALUE         1176
 #define _APS_NEXT_SYMED_VALUE           104
 #endif
 #endif

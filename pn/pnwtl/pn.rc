@@ -17,7 +17,7 @@
 #undef APSTUDIO_READONLY_SYMBOLS
 
 /////////////////////////////////////////////////////////////////////////////
-// English (United States) resources
+// Английский (США) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
 LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
@@ -41,12 +41,12 @@ END
 
 #endif    // APSTUDIO_INVOKED
 
-#endif    // English (United States) resources
+#endif    // Английский (США) resources
 /////////////////////////////////////////////////////////////////////////////
 
 
 /////////////////////////////////////////////////////////////////////////////
-// English (United Kingdom) resources
+// Английский (Соединенное Королевство) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENG)
 LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_UK
@@ -593,25 +593,45 @@ END
 // Icon with lowest ID value placed first to ensure application icon
 // remains consistent on all systems.
 IDR_MAINFRAME           ICON                    "res\\pn.ico"
+
 IDR_MDICHILD            ICON                    "res\\pnDoc.ico"
+
 IDI_INFOICON            ICON                    "res\\infoicon.ico"
+
 IDI_TEXTCLIPS           ICON                    "res\\textclips.ico"
+
 IDI_PROJECTS            ICON                    "res\\projects.ico"
+
 IDI_PROJECTFOLDER       ICON                    "res\\projectfolder.ico"
+
 IDI_WORKSPACE           ICON                    "res\\workspace.ico"
+
 IDI_BADPROJECT          ICON                    "res\\noproject.ico"
+
 IDI_MAGICFOLDER         ICON                    "res\\magicfolder.ico"
+
 IDI_CTAGS               ICON                    "res\\ctags.ico"
+
 IDI_OUTPUT              ICON                    "res\\page_white_text.ico"
+
 IDI_FINDINFILES         ICON                    "res\\folder_find.ico"
+
 IDI_SCRIPTS             ICON                    "res\\scripts.ico"
+
 IDI_TASKDLG_ARROW_HOT   ICON                    "res\\TaskDlgArrowHot.ico"
+
 IDI_TASKDLG_ARROW_NORMAL ICON                    "res\\TaskDlgArrowNormal.ico"
+
 IDI_TASKDLG_CHEVRON_LESS ICON                    "res\\TaskDlgChevronLess.ico"
+
 IDI_TASKDLG_CHEVRON_MORE ICON                    "res\\TaskDlgChevronMore.ico"
+
 IDI_OPENFILES           ICON                    "res\\folder_table.ico"
+
 IDI_BROWSER             ICON                    "res\\folder_magnify.ico"
+
 IDI_READONLY            ICON                    "res\\readonly.ico"
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -983,18 +1003,20 @@ BEGIN
     CONTROL         "&Show Line Numbers",IDC_OPT_LINENOSCHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,12,138,10
     CONTROL         "&Word-Wrap",IDC_OPT_WORDWRAPCHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,24,138,10
     CONTROL         "&Use the tab character for indentation",IDC_OPT_USETABSCHECK,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,60,168,10
-    LTEXT           "&Tab Width:",IDC_STATIC,10,76,48,8
-    EDITTEXT        IDC_OPT_TABWIDTHEDIT,60,74,30,14,ES_AUTOHSCROLL
-    LTEXT           "&Line Endings:",IDC_STATIC,10,92,42,8
-    COMBOBOX        IDC_OPT_LECOMBO,10,102,102,66,CBS_DROPDOWNLIST | CBS_SORT | WS_VSCROLL | WS_TABSTOP
-    LTEXT           "&Encoding:",IDC_STATIC,10,120,270,8
-    COMBOBOX        IDC_OPT_CPCOMBO,10,130,102,66,CBS_DROPDOWNLIST | CBS_SORT | WS_VSCROLL | WS_TABSTOP
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,71,168,10
+    LTEXT           "&Tab Width:",IDC_STATIC,10,87,48,8
+    EDITTEXT        IDC_OPT_TABWIDTHEDIT,60,85,30,14,ES_AUTOHSCROLL
+    LTEXT           "&Line Endings:",IDC_STATIC,10,103,42,8
+    COMBOBOX        IDC_OPT_LECOMBO,10,113,102,66,CBS_DROPDOWNLIST | CBS_SORT | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "&Encoding:",IDC_STATIC,10,131,270,8
+    COMBOBOX        IDC_OPT_CPCOMBO,10,141,102,66,CBS_DROPDOWNLIST | CBS_SORT | WS_VSCROLL | WS_TABSTOP
     CONTROL         "Visible Line &Endings",IDC_OPT_LINEENDINGSCHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,36,84,10
     CONTROL         "Visible &Whitespace Characters",IDC_OPT_WHITESPACECHECK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,48,111,10
-    LTEXT           "&Multi-Byte Character Support for ANSI files:",IDC_STATIC,10,148,277,8
-    COMBOBOX        IDC_OPT_CSCOMBO,10,157,102,66,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "&Multi-Byte Character Support for ANSI files:",IDC_STATIC,10,159,277,8
+    COMBOBOX        IDC_OPT_CSCOMBO,10,168,102,66,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    CONTROL         "Autodetect Indentation",IDC_OPT_AUTODETECTINDENTATION,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,59,91,10
 END
 
 IDD_FILEPROPERTIES DIALOGEX 0, 0, 194, 204
@@ -1729,20 +1751,35 @@ END
 //
 
 IDB_TBEDITOR24          BITMAP                  "res\\editor24.bmp"
+
 IDB_TBFIND24            BITMAP                  "res\\findbarbmps24.bmp"
+
 IDB_EDITOR              BITMAP                  "res\\editor.bmp"
+
 IDB_TRUETYPE_FONTTYPE   BITMAP                  "res\\font_tru.bmp"
+
 IDR_TBR_PROJECTS        BITMAP                  "res\\tbrProjects.bmp"
+
 IDB_ABOUT               BITMAP                  "res\\about.bmp"
+
 IDB_TAGTYPES            BITMAP                  "res\\tagtypes.bmp"
+
 IDB_TBMAINDIS           BITMAP                  "res\\toolbardisabled.bmp"
+
 IDB_REDCLOSE            BITMAP                  "res\\redclose.bmp"
+
 IDB_TBMAIN24            BITMAP                  "res\\tbrMain24.bmp"
+
 IDB_OPENFILES           BITMAP                  "res\\openfilesimages.bmp"
+
 IDB_TBFIND              BITMAP                  "res\\findbarbmps.bmp"
+
 IDB_TOOLBAR             BITMAP                  "res\\toolbar.bmp"
+
 IDB_TBCLIPS             BITMAP                  "res\\clipstoolbar.bmp"
+
 IDB_TBCLIPS24           BITMAP                  "res\\clipstoolbar24.bmp"
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -1769,6 +1806,7 @@ END
 //
 
 1                       RT_MANIFEST             "pn.exe.manifest"
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -2161,7 +2199,7 @@ BEGIN
     IDS_OPTIONS_REMOVEEDITWITH "Remove ""Edit With..."" from Explorer"
 END
 
-#endif    // English (United Kingdom) resources
+#endif    // Английский (Соединенное Королевство) resources
 /////////////////////////////////////////////////////////////////////////////
 
 
@@ -2174,3 +2212,4 @@ END
 #include "res/pn.rc2"
 /////////////////////////////////////////////////////////////////////////////
 #endif    // not APSTUDIO_INVOKED
+
