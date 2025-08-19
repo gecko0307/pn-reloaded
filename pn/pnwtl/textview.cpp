@@ -186,36 +186,38 @@ int determineEncoding(unsigned char* pBuf, int nLen, EPNEncoding& eEncoding) {
 	return nRet;
 }
 
-bool CTextView::DetectIntentationTabs()
+bool CTextView::DetectIndentationTabs()
 {
 	int totalLines = GetLineCount();
 	int maxLines = 200;
 	int linesToCheck = min(totalLines, maxLines);
 	int tabLines = 0;
 	int spaceLines = 0;
-
-	char lineBuf[1024];
+	
+	int lineBufferLength = 0;
+	for (int i = 0; i < linesToCheck; i++)
+	{
+		int lineLen = SPerform(SCI_LINELENGTH, i);
+		if (lineLen > lineBufferLength)
+			lineBufferLength = lineLen;
+	}
+	
+	if (lineBufferLength == 0)
+		return false;
+	
+	char* lineBuf = new char[lineBufferLength + 1];
 	
 	for (int i = 0; i < linesToCheck; i++)
 	{
 		int len = GetLine(i, lineBuf);
-        	if (len <= 0) continue;
-
-		CString line(lineBuf, len); // создаём CString из считанной длины
-        	if (line.IsEmpty())
-            		continue;
-
-		bool hasTab = false;
-		bool hasSpace = false;
-
-		if (lineBuf[0] == '\t') hasTab = true;
-            	else if (lineBuf[0] == ' ') hasSpace = true;
-
-        	if (hasTab)
-            		tabLines++;
-       		else if (hasSpace)
-            		spaceLines++;
+		if (len > 0)
+		{
+			if (lineBuf[0] == '\t') tabLines++;
+			else if (lineBuf[0] == ' ') spaceLines++;
+		}
 	}
+	
+	delete[] lineBuf;
 	
 	return tabLines > spaceLines;
 }

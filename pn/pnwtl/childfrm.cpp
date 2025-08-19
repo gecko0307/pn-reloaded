@@ -2231,7 +2231,7 @@ bool CChildFrame::PNOpenFile(LPCTSTR pathname, Scheme* pScheme, EPNEncoding enco
 	if (pView)
 	{
 		bool useTabs = OPTIONS->GetCached(Options::OAutodetectIndentation)
-			? pView->DetectIntentationTabs() // detect from file
+			? pView->DetectIndentationTabs() // detect from file
 			: OPTIONS->GetCached(Options::OUseTabs);  // use default setting
 		//bool useTabs = pView->DetectIntentationTabs();
 		pView->SPerform(SCI_SETUSETABS, useTabs ? TRUE : FALSE, 0);

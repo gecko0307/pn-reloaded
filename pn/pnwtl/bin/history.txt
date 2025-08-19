@@ -1,4 +1,14 @@
 ========================================
+Release Name: 2.6.1
+Build: 2.6.1, Version Label: Reloaded
+========================================
+New features:
+- Add ProjectTemplateEditor.exe and TextClipCreator.exe.
+
+Bugfixes:
+- Fix indentation detector crash with long lines.
+
+========================================
 Release Name: 2.6
 Build: 2.6, Version Label: Reloaded
 ========================================
