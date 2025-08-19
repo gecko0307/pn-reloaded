@@ -2,6 +2,10 @@ Author:
 -------
 Simon Steele
 
+PN Reloaded fork:
+-----------------
+Timur Gafarov
+
 Code / Design Contributors:
 ---------------------------
 Bjoern Graf
