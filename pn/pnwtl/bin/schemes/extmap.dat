@@ -36,12 +36,14 @@
 .f2k=fortran
 .f=fortran77
 .for=fortran77
+.fx=hlsl
 .glsl=glsl
 .gs=gs
 .h=cpp
 .hpp=cpp
 .html=Web
 .htm=Web
+.hlsl=hlsl
 .idl=cpp
 .inf=properties
 .ini=properties
