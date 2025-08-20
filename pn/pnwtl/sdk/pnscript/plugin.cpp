@@ -31,8 +31,10 @@ void PipeClientThread(HANDLE hPipe)
 		if (!success || bytesRead == 0) break;
 
 		buffer[bytesRead] = 0;
-		std::wstring output = std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>>().from_bytes(buffer);
-		g_pn->GetGlobalOutputWindow()->AddToolOutput(output.c_str());
+		std::wstring command = std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>>().from_bytes(buffer);
+		g_pn->GetGlobalOutputWindow()->AddToolOutput(command.c_str());
+
+		// TODO: parse command
 	}
 
 	FlushFileBuffers(hPipe);
@@ -97,24 +99,66 @@ void RunNodeScript(const std::wstring& scriptPath)
 	PathRemoveFileSpec(exePath);
 	std::wstring scriptFullPath = exePath + std::wstring(L"\\") + scriptPath;
 
+	SECURITY_ATTRIBUTES sa = { sizeof(sa), nullptr, TRUE };
+	HANDLE hStdOutRead, hStdOutWrite, hStdErrRead, hStdErrWrite;
+
+	if (!CreatePipe(&hStdOutRead, &hStdOutWrite, &sa, 0) ||
+		!CreatePipe(&hStdErrRead, &hStdErrWrite, &sa, 0))
+		return;
+
 	STARTUPINFOW si = { sizeof(si) };
-	si.dwFlags = STARTF_USESHOWWINDOW;
+	si.dwFlags = STARTF_USESHOWWINDOW | STARTF_USESTDHANDLES;
 	si.wShowWindow = SW_HIDE;
+	si.hStdOutput = hStdOutWrite;
+	si.hStdError = hStdErrWrite;
 
 	PROCESS_INFORMATION pi = {};
+
 	std::wstring cmd = L"node.exe \"" + scriptFullPath + L"\" \"" + GetPipeName() + L"\"";
 	std::vector<wchar_t> cmdBuf(cmd.begin(), cmd.end());
 	cmdBuf.push_back(0);
 
-	if (!CreateProcessW(nullptr, cmdBuf.data(), nullptr, nullptr, FALSE,
+	if (CreateProcessW(nullptr, cmdBuf.data(), nullptr, nullptr, TRUE,
 		CREATE_NO_WINDOW, nullptr, nullptr, &si, &pi))
 	{
-		g_pn->GetGlobalOutputWindow()->AddToolOutput(L"Failed to start Node.js\n");
-		return;
-	}
+		CloseHandle(hStdOutWrite);
+		CloseHandle(hStdErrWrite);
 
-	CloseHandle(pi.hProcess);
-	CloseHandle(pi.hThread);
+		// stdout
+		std::thread([hStdOutRead]() {
+			char buffer[4096];
+			DWORD bytesRead;
+			while (ReadFile(hStdOutRead, buffer, sizeof(buffer) - 1, &bytesRead, nullptr) && bytesRead)
+			{
+				buffer[bytesRead] = 0;
+				std::wstring output = std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>>().from_bytes(buffer);
+				g_pn->GetGlobalOutputWindow()->AddToolOutput(output.c_str());
+			}
+			CloseHandle(hStdOutRead);
+		}).detach();
+
+		// stderr
+		std::thread([hStdErrRead]() {
+			char buffer[4096];
+			DWORD bytesRead;
+			while (ReadFile(hStdErrRead, buffer, sizeof(buffer) - 1, &bytesRead, nullptr) && bytesRead)
+			{
+				buffer[bytesRead] = 0;
+				std::wstring errorOutput = std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>>().from_bytes(buffer);
+				g_pn->GetGlobalOutputWindow()->AddToolOutput(errorOutput.c_str());
+			}
+			CloseHandle(hStdErrRead);
+		}).detach();
+
+		CloseHandle(pi.hProcess);
+		CloseHandle(pi.hThread);
+	}
+	else
+	{
+		g_pn->GetGlobalOutputWindow()->AddToolOutput(L"Failed to start Node.js\n");
+		CloseHandle(hStdOutRead); CloseHandle(hStdOutWrite);
+		CloseHandle(hStdErrRead); CloseHandle(hStdErrWrite);
+	}
 }
 
 class PNSEventSink: public extensions::IAppEventSink
