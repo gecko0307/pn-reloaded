@@ -15,15 +15,18 @@ std::atomic<bool> g_stopPipeThread{ false };
 std::mutex g_clientMutex;
 std::unordered_set<HANDLE> g_clientThreads;
 
-std::wstring GetPipeName() {
+std::wstring GetPipeName()
+{
 	return L"\\\\.\\pipe\\PNScriptPipe_" + std::to_wstring(GetCurrentProcessId());
 }
 
-void PipeClientThread(HANDLE hPipe) {
+void PipeClientThread(HANDLE hPipe)
+{
 	char buffer[4096];
 	DWORD bytesRead;
 
-	while (!g_stopPipeThread) {
+	while (!g_stopPipeThread)
+	{
 		BOOL success = ReadFile(hPipe, buffer, sizeof(buffer) - 1, &bytesRead, nullptr);
 		if (!success || bytesRead == 0) break;
 
@@ -40,8 +43,10 @@ void PipeClientThread(HANDLE hPipe) {
 	g_clientThreads.erase(hPipe);
 }
 
-void PipeServerThread() {
-	while (!g_stopPipeThread) {
+void PipeServerThread()
+{
+	while (!g_stopPipeThread)
+	{
 		HANDLE hPipe = CreateNamedPipeW(
 			GetPipeName().c_str(),
 			PIPE_ACCESS_DUPLEX | FILE_FLAG_OVERLAPPED,
@@ -54,16 +59,20 @@ void PipeServerThread() {
 
 		OVERLAPPED ov = {};
 		ov.hEvent = CreateEvent(nullptr, TRUE, FALSE, nullptr);
-		if (!ov.hEvent) {
+		if (!ov.hEvent)
+		{
 			CloseHandle(hPipe);
 			break;
 		}
 
 		BOOL connected = ConnectNamedPipe(hPipe, &ov);
-		if (!connected) {
-			if (GetLastError() == ERROR_IO_PENDING) {
+		if (!connected)
+		{
+			if (GetLastError() == ERROR_IO_PENDING)
+			{
 				DWORD wait = WaitForSingleObject(ov.hEvent, 100);
-				if (wait == WAIT_TIMEOUT && g_stopPipeThread) {
+				if (wait == WAIT_TIMEOUT && g_stopPipeThread)
+				{
 					CancelIo(hPipe);
 					CloseHandle(hPipe);
 					CloseHandle(ov.hEvent);
@@ -81,7 +90,8 @@ void PipeServerThread() {
 	}
 }
 
-void RunNodeScript(const std::wstring& scriptPath) {
+void RunNodeScript(const std::wstring& scriptPath)
+{
 	TCHAR exePath[MAX_PATH];
 	GetModuleFileName(NULL, exePath, MAX_PATH);
 	PathRemoveFileSpec(exePath);
@@ -240,11 +250,13 @@ void __declspec(dllexport) __stdcall pn_get_extension_info(PN::BaseString& name,
 	version = "0.1";
 }
 
-void __declspec(dllexport) __stdcall pn_exit_extension() {
+void __declspec(dllexport) __stdcall pn_exit_extension()
+{
 	g_stopPipeThread = true;
 
 	std::lock_guard<std::mutex> lock(g_clientMutex);
-	for (auto h : g_clientThreads) {
+	for (auto h : g_clientThreads)
+	{
 		CancelIo(h);
 		CloseHandle(h);
 	}
