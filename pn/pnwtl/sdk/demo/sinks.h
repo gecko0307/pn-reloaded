@@ -8,10 +8,10 @@ public:
 
 	virtual void OnCharAdded(char c)
 	{
-		char buf[2];
+		wchar_t buf[2];
 		buf[0] = c;
 		buf[1] = '\0';
-		g_pn->GetGlobalOutputWindow()->AddToolOutput("Char: ");
+		g_pn->GetGlobalOutputWindow()->AddToolOutput(L"Char: ");
 		g_pn->GetGlobalOutputWindow()->AddToolOutput(&buf[0]);
 	}
 };
@@ -26,16 +26,16 @@ public:
 	virtual ~DocEventSink(){}
 
 	/// Called when the scheme changes
-	virtual void OnSchemeChange(const char* scheme)
+	virtual void OnSchemeChange(const wchar_t* scheme)
 	{
-		g_pn->GetGlobalOutputWindow()->AddToolOutput("Scheme Changed:");
+		g_pn->GetGlobalOutputWindow()->AddToolOutput(L"Scheme Changed:");
 		g_pn->GetGlobalOutputWindow()->AddToolOutput(scheme);
 	}
 	
 	/// Called when the document closes
 	virtual void OnDocClosing()
 	{
-		g_pn->GetGlobalOutputWindow()->AddToolOutput("Document Closing:");
+		g_pn->GetGlobalOutputWindow()->AddToolOutput(L"Document Closing:");
 		g_pn->GetGlobalOutputWindow()->AddToolOutput(m_doc->GetTitle());
 		m_doc.reset();
 	}
