@@ -12,10 +12,26 @@ Changes from original PN:
 - Add Haskell, GLSL, HLSL, WGSL syntax highlighting schemes;
 - Support for JSON files (treated as JavaScript files for syntax highlighting);
 - Add Text Clip Creator and Project Template Editor to the distribution;
-- Add files necessary to build CHM help file using HTML Help Workshop.
+- Add files necessary to build CHM help file using HTML Help Workshop;
+- PNScript - a Node.js scripting extension (WIP);
 
 ## Building
 
 Download [Boost 1.57](https://archives.boost.io/release/1.57.0/source/boost_1_57_0.7z) and extract the source code to `lib/boost/boost-1_57_0`.
 
 Open and build `pn/pnwtl/pn.sln`.
+
+## Scripting via Node.js (WIP)
+PN Reloaded features pnscript.dll, an extension that makes possible to run JavaScript inside the editor. This requires Node.js.
+
+PNScript looks for *.js files in `scripts` folder. Each script is registered in Extensions menu.
+
+API for scripts is not ready yet. Scripts will be able to communicate with the application via named pipe IPC using `PN` object:
+
+```js
+const PN = require("./pnscript");
+
+const pn = new PN(process.argv[2]);
+
+pn.showMessage("Hello from JS!");
+```
