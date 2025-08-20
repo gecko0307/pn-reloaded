@@ -3,4 +3,5 @@
 	<storeType value="Ini"/>
 	<extension path="ctagsnavigator.dll"/>
 	<extension path="customscheme.dll"/>
+	<extension path="pnscript.dll"/>
 </config>

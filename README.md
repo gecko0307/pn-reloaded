@@ -13,7 +13,7 @@ Changes from original PN:
 - Support for JSON files (treated as JavaScript files for syntax highlighting);
 - Add Text Clip Creator and Project Template Editor to the distribution;
 - Add files necessary to build CHM help file using HTML Help Workshop;
-- PNScript - a Node.js scripting extension (WIP);
+- PNScript - a work-in-progress Node.js scripting extension which will replace PyPN.
 
 ## Building
 
