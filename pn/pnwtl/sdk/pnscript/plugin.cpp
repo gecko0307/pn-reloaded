@@ -1,62 +1,110 @@
 #include "stdafx.h"
 #include <vector>
+#include <thread>
 #include <locale>
 #include <codecvt>
+#include <mutex>
+#include <unordered_set>
+#include <atomic>
 #include "shellapi.h"
 #include "shlwapi.h"
 
 extensions::IPN* g_pn = nullptr;
+std::atomic<bool> g_stopPipeThread{ false };
 
-void RunNodeScript(const std::wstring& scriptPath)
-{
+std::mutex g_clientMutex;
+std::unordered_set<HANDLE> g_clientThreads;
+
+std::wstring GetPipeName() {
+	return L"\\\\.\\pipe\\PNScriptPipe_" + std::to_wstring(GetCurrentProcessId());
+}
+
+void PipeClientThread(HANDLE hPipe) {
+	char buffer[4096];
+	DWORD bytesRead;
+
+	while (!g_stopPipeThread) {
+		BOOL success = ReadFile(hPipe, buffer, sizeof(buffer) - 1, &bytesRead, nullptr);
+		if (!success || bytesRead == 0) break;
+
+		buffer[bytesRead] = 0;
+		std::wstring output = std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>>().from_bytes(buffer);
+		g_pn->GetGlobalOutputWindow()->AddToolOutput(output.c_str());
+	}
+
+	FlushFileBuffers(hPipe);
+	DisconnectNamedPipe(hPipe);
+	CloseHandle(hPipe);
+
+	std::lock_guard<std::mutex> lock(g_clientMutex);
+	g_clientThreads.erase(hPipe);
+}
+
+void PipeServerThread() {
+	while (!g_stopPipeThread) {
+		HANDLE hPipe = CreateNamedPipeW(
+			GetPipeName().c_str(),
+			PIPE_ACCESS_DUPLEX | FILE_FLAG_OVERLAPPED,
+			PIPE_TYPE_MESSAGE | PIPE_READMODE_MESSAGE | PIPE_WAIT,
+			PIPE_UNLIMITED_INSTANCES,
+			4096, 4096, 0, nullptr
+		);
+
+		if (hPipe == INVALID_HANDLE_VALUE) break;
+
+		OVERLAPPED ov = {};
+		ov.hEvent = CreateEvent(nullptr, TRUE, FALSE, nullptr);
+		if (!ov.hEvent) {
+			CloseHandle(hPipe);
+			break;
+		}
+
+		BOOL connected = ConnectNamedPipe(hPipe, &ov);
+		if (!connected) {
+			if (GetLastError() == ERROR_IO_PENDING) {
+				DWORD wait = WaitForSingleObject(ov.hEvent, 100);
+				if (wait == WAIT_TIMEOUT && g_stopPipeThread) {
+					CancelIo(hPipe);
+					CloseHandle(hPipe);
+					CloseHandle(ov.hEvent);
+					break;
+				}
+			}
+		}
+
+		CloseHandle(ov.hEvent);
+
+		std::lock_guard<std::mutex> lock(g_clientMutex);
+		std::thread clientThread(PipeClientThread, hPipe);
+		g_clientThreads.insert(hPipe);
+		clientThread.detach();
+	}
+}
+
+void RunNodeScript(const std::wstring& scriptPath) {
 	TCHAR exePath[MAX_PATH];
 	GetModuleFileName(NULL, exePath, MAX_PATH);
 	PathRemoveFileSpec(exePath);
 	std::wstring scriptFullPath = exePath + std::wstring(L"\\") + scriptPath;
 
-	SECURITY_ATTRIBUTES sa = { sizeof(SECURITY_ATTRIBUTES), nullptr, TRUE };
-	HANDLE hRead, hWrite;
-	if (!CreatePipe(&hRead, &hWrite, &sa, 0)) return;
-
 	STARTUPINFOW si = { sizeof(si) };
-	si.dwFlags = STARTF_USESHOWWINDOW | STARTF_USESTDHANDLES;
+	si.dwFlags = STARTF_USESHOWWINDOW;
 	si.wShowWindow = SW_HIDE;
-	si.hStdOutput = hWrite;
-	si.hStdError = hWrite;
 
 	PROCESS_INFORMATION pi = {};
-
-	std::wstring cmd = L"node.exe \"" + scriptFullPath + L"\"";
-
+	std::wstring cmd = L"node.exe \"" + scriptFullPath + L"\" \"" + GetPipeName() + L"\"";
 	std::vector<wchar_t> cmdBuf(cmd.begin(), cmd.end());
 	cmdBuf.push_back(0);
 
-	if (CreateProcessW(nullptr, cmdBuf.data(), nullptr, nullptr, TRUE,
+	if (!CreateProcessW(nullptr, cmdBuf.data(), nullptr, nullptr, FALSE,
 		CREATE_NO_WINDOW, nullptr, nullptr, &si, &pi))
 	{
-		CloseHandle(hWrite);
-
-		char buffer[4096];
-		DWORD bytesRead;
-		while (ReadFile(hRead, buffer, sizeof(buffer) - 1, &bytesRead, nullptr) && bytesRead)
-		{
-			buffer[bytesRead] = 0; // null-terminate
-			std::wstring output = std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>>().from_bytes(buffer);
-			g_pn->GetGlobalOutputWindow()->AddToolOutput(output.data());
-		}
-
-		WaitForSingleObject(pi.hProcess, INFINITE);
-		CloseHandle(pi.hProcess);
-		CloseHandle(pi.hThread);
-		CloseHandle(hRead);
-	}
-	else
-	{
-		DWORD err = GetLastError();
 		g_pn->GetGlobalOutputWindow()->AddToolOutput(L"Failed to start Node.js\n");
-		CloseHandle(hRead);
-		CloseHandle(hWrite);
+		return;
 	}
+
+	CloseHandle(pi.hProcess);
+	CloseHandle(pi.hThread);
 }
 
 class PNSEventSink: public extensions::IAppEventSink
@@ -154,13 +202,14 @@ std::vector<std::wstring> GetScriptsFromFolder(const std::wstring& folderPath)
 	return scripts;
 }
 
-bool __stdcall pn_init_extension(int iface_version, extensions::IPN* pn)
-{
-	if(iface_version != PN_EXT_IFACE_VERSION)
+bool __stdcall pn_init_extension(int iface_version, extensions::IPN* pn) {
+	if (iface_version != PN_EXT_IFACE_VERSION)
 		return false;
 
 	g_pn = pn;
-	
+	g_stopPipeThread = false;
+	std::thread(PipeServerThread).detach();
+
 	extensions::IAppEventSinkPtr sink(new PNSEventSink());
 	g_pn->AddEventSink(sink);
 
@@ -191,9 +240,15 @@ void __declspec(dllexport) __stdcall pn_get_extension_info(PN::BaseString& name,
 	version = "0.1";
 }
 
-void __declspec(dllexport) __stdcall pn_exit_extension()
-{
-	//
+void __declspec(dllexport) __stdcall pn_exit_extension() {
+	g_stopPipeThread = true;
+
+	std::lock_guard<std::mutex> lock(g_clientMutex);
+	for (auto h : g_clientThreads) {
+		CancelIo(h);
+		CloseHandle(h);
+	}
+	g_clientThreads.clear();
 }
 
 BOOL APIENTRY DllMain( HMODULE hModule,
