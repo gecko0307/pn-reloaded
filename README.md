@@ -13,7 +13,7 @@ Changes from original PN:
 - Support for JSON files (treated as JavaScript files for syntax highlighting);
 - Add Text Clip Creator and Project Template Editor to the distribution;
 - Add files necessary to build CHM help file using HTML Help Workshop;
-- PNScript - a work-in-progress Node.js scripting extension which will replace PyPN.
+- PNScript - a Node.js scripting extension.
 
 ## Building
 
@@ -21,17 +21,20 @@ Download [Boost 1.57](https://archives.boost.io/release/1.57.0/source/boost_1_57
 
 Open and build `pn/pnwtl/pn.sln`.
 
-## Scripting via Node.js (WIP)
+## Scripting via Node.js
 PN Reloaded features pnscript.dll, an extension that makes possible to run JavaScript inside the editor. This requires Node.js.
 
 PNScript looks for *.js files in `scripts` folder. Each script is registered in Extensions menu.
 
-API for scripts is not ready yet. Scripts will be able to communicate with the application via named pipe IPC using `PN` object:
+Scripts work as text filters. PNScript saves the current document to a temporary file and sends its path as an argument, as well as the output file path. THe output is then fed to the newly opened document.
+
+The following example implements an uppercase filter:
 
 ```js
-const PN = require("./pnscript");
+const fs = require("fs");
+const inputFile = process.argv[2];
+const outputFile = process.argv[3];
 
-const pn = new PN(process.argv[2]);
-
-pn.showMessage("Hello from JS!");
+const input = fs.readFileSync(inputFile, "utf8");
+fs.writeFileSync(outputFile, input.toUpperCase());
 ```

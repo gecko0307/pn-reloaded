@@ -1,164 +1,92 @@
 #include "stdafx.h"
+#include <fstream>
 #include <vector>
-#include <thread>
 #include <locale>
 #include <codecvt>
-#include <mutex>
-#include <unordered_set>
-#include <atomic>
+#include <ShlObj.h>
 #include "shellapi.h"
 #include "shlwapi.h"
+#include "Scintilla.h"
+//#include "SciLexer.h"
+#include "json/json.h"
 
 extensions::IPN* g_pn = nullptr;
-std::atomic<bool> g_stopPipeThread{ false };
 
-std::mutex g_clientMutex;
-std::unordered_set<HANDLE> g_clientThreads;
-
-std::wstring GetPipeName()
-{
-	return L"\\\\.\\pipe\\PNScriptPipe_" + std::to_wstring(GetCurrentProcessId());
-}
-
-void PipeClientThread(HANDLE hPipe)
-{
-	char buffer[4096];
-	DWORD bytesRead;
-
-	while (!g_stopPipeThread)
-	{
-		BOOL success = ReadFile(hPipe, buffer, sizeof(buffer) - 1, &bytesRead, nullptr);
-		if (!success || bytesRead == 0) break;
-
-		buffer[bytesRead] = 0;
-		std::wstring command = std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>>().from_bytes(buffer);
-		g_pn->GetGlobalOutputWindow()->AddToolOutput(command.c_str());
-
-		// TODO: parse command
-	}
-
-	FlushFileBuffers(hPipe);
-	DisconnectNamedPipe(hPipe);
-	CloseHandle(hPipe);
-
-	std::lock_guard<std::mutex> lock(g_clientMutex);
-	g_clientThreads.erase(hPipe);
-}
-
-void PipeServerThread()
-{
-	while (!g_stopPipeThread)
-	{
-		HANDLE hPipe = CreateNamedPipeW(
-			GetPipeName().c_str(),
-			PIPE_ACCESS_DUPLEX | FILE_FLAG_OVERLAPPED,
-			PIPE_TYPE_MESSAGE | PIPE_READMODE_MESSAGE | PIPE_WAIT,
-			PIPE_UNLIMITED_INSTANCES,
-			4096, 4096, 0, nullptr
-		);
-
-		if (hPipe == INVALID_HANDLE_VALUE) break;
-
-		OVERLAPPED ov = {};
-		ov.hEvent = CreateEvent(nullptr, TRUE, FALSE, nullptr);
-		if (!ov.hEvent)
-		{
-			CloseHandle(hPipe);
-			break;
-		}
-
-		BOOL connected = ConnectNamedPipe(hPipe, &ov);
-		if (!connected)
-		{
-			if (GetLastError() == ERROR_IO_PENDING)
-			{
-				DWORD wait = WaitForSingleObject(ov.hEvent, 100);
-				if (wait == WAIT_TIMEOUT && g_stopPipeThread)
-				{
-					CancelIo(hPipe);
-					CloseHandle(hPipe);
-					CloseHandle(ov.hEvent);
-					break;
-				}
-			}
-		}
-
-		CloseHandle(ov.hEvent);
-
-		std::lock_guard<std::mutex> lock(g_clientMutex);
-		std::thread clientThread(PipeClientThread, hPipe);
-		g_clientThreads.insert(hPipe);
-		clientThread.detach();
-	}
-}
-
-void RunNodeScript(const std::wstring& scriptPath)
+std::string RunNodeScript(const std::wstring& scriptPath, const std::string& inputText)
 {
 	TCHAR exePath[MAX_PATH];
 	GetModuleFileName(NULL, exePath, MAX_PATH);
 	PathRemoveFileSpec(exePath);
-	std::wstring scriptFullPath = exePath + std::wstring(L"\\") + scriptPath;
+	std::wstring fullPath = exePath + std::wstring(L"\\") + scriptPath;
 
-	SECURITY_ATTRIBUTES sa = { sizeof(sa), nullptr, TRUE };
-	HANDLE hStdOutRead, hStdOutWrite, hStdErrRead, hStdErrWrite;
+	wchar_t tempPath[MAX_PATH];
+	if (!GetTempPathW(MAX_PATH, tempPath))
+		return "ERROR: Failed to get temp path\n";
 
-	if (!CreatePipe(&hStdOutRead, &hStdOutWrite, &sa, 0) ||
-		!CreatePipe(&hStdErrRead, &hStdErrWrite, &sa, 0))
-		return;
+	wchar_t tempIn[MAX_PATH], tempOut[MAX_PATH];
+	GetTempFileNameW(tempPath, L"pnin", 0, tempIn);
+	GetTempFileNameW(tempPath, L"pnout", 0, tempOut);
 
-	STARTUPINFOW si = { sizeof(si) };
-	si.dwFlags = STARTF_USESHOWWINDOW | STARTF_USESTDHANDLES;
-	si.wShowWindow = SW_HIDE;
-	si.hStdOutput = hStdOutWrite;
-	si.hStdError = hStdErrWrite;
+	std::ofstream ofs(tempIn, std::ios::binary);
+	ofs.write(inputText.data(), inputText.size());
+	ofs.close();
 
-	PROCESS_INFORMATION pi = {};
-
-	std::wstring cmd = L"node.exe \"" + scriptFullPath + L"\" \"" + GetPipeName() + L"\"";
+	std::wstring cmd = L"node.exe \"" + fullPath + L"\" \"" + std::wstring(tempIn) + L"\" \"" + std::wstring(tempOut) + L"\"";
 	std::vector<wchar_t> cmdBuf(cmd.begin(), cmd.end());
 	cmdBuf.push_back(0);
 
-	if (CreateProcessW(nullptr, cmdBuf.data(), nullptr, nullptr, TRUE,
+	STARTUPINFOW si{};
+	PROCESS_INFORMATION pi{};
+	si.cb = sizeof(si);
+	si.dwFlags = STARTF_USESHOWWINDOW;
+	si.wShowWindow = SW_HIDE;
+
+	if (!CreateProcessW(nullptr, cmdBuf.data(), nullptr, nullptr, FALSE,
 		CREATE_NO_WINDOW, nullptr, nullptr, &si, &pi))
 	{
-		CloseHandle(hStdOutWrite);
-		CloseHandle(hStdErrWrite);
-
-		// stdout
-		std::thread([hStdOutRead]() {
-			char buffer[4096];
-			DWORD bytesRead;
-			while (ReadFile(hStdOutRead, buffer, sizeof(buffer) - 1, &bytesRead, nullptr) && bytesRead)
-			{
-				buffer[bytesRead] = 0;
-				std::wstring output = std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>>().from_bytes(buffer);
-				g_pn->GetGlobalOutputWindow()->AddToolOutput(output.c_str());
-			}
-			CloseHandle(hStdOutRead);
-		}).detach();
-
-		// stderr
-		std::thread([hStdErrRead]() {
-			char buffer[4096];
-			DWORD bytesRead;
-			while (ReadFile(hStdErrRead, buffer, sizeof(buffer) - 1, &bytesRead, nullptr) && bytesRead)
-			{
-				buffer[bytesRead] = 0;
-				std::wstring errorOutput = std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>>().from_bytes(buffer);
-				g_pn->GetGlobalOutputWindow()->AddToolOutput(errorOutput.c_str());
-			}
-			CloseHandle(hStdErrRead);
-		}).detach();
-
-		CloseHandle(pi.hProcess);
-		CloseHandle(pi.hThread);
+		return "ERROR: Failed to launch Node.js\n";
 	}
-	else
-	{
-		g_pn->GetGlobalOutputWindow()->AddToolOutput(L"Failed to start Node.js\n");
-		CloseHandle(hStdOutRead); CloseHandle(hStdOutWrite);
-		CloseHandle(hStdErrRead); CloseHandle(hStdErrWrite);
-	}
+
+	WaitForSingleObject(pi.hProcess, INFINITE);
+	CloseHandle(pi.hProcess);
+	CloseHandle(pi.hThread);
+
+	std::ifstream ifs(tempOut, std::ios::binary);
+	std::string result((std::istreambuf_iterator<char>(ifs)), std::istreambuf_iterator<char>());
+
+	DeleteFileW(tempIn);
+	DeleteFileW(tempOut);
+
+	return result;
+}
+
+void RunNodeFilter(const std::wstring& scriptPath)
+{
+	extensions::IDocumentPtr doc = g_pn->GetCurrentDocument();
+	if (!doc) return;
+
+	HWND hWndScintilla = doc->GetScintillaHWND();
+	if (!hWndScintilla) return;
+
+	LRESULT length = SendMessage(hWndScintilla, SCI_GETLENGTH, 0, 0);
+	std::string input;
+	input.resize(static_cast<size_t>(length));
+
+	Scintilla::TextRange tr;
+	tr.chrg.cpMin = 0;
+	tr.chrg.cpMax = static_cast<LONG>(length);
+	tr.lpstrText = &input[0];
+	SendMessage(hWndScintilla, SCI_GETTEXTRANGE, 0, (LPARAM)&tr);
+
+	std::string result = RunNodeScript(scriptPath, input);
+
+	extensions::IDocumentPtr newDoc = g_pn->NewDocument(nullptr);
+	if (!newDoc) return;
+
+	HWND hNewScintilla = newDoc->GetScintillaHWND();
+	if (!hNewScintilla) return;
+
+	SendMessage(hNewScintilla, SCI_SETTEXT, 0, (LPARAM)result.c_str());
 }
 
 class PNSEventSink: public extensions::IAppEventSink
@@ -202,7 +130,7 @@ class PNSMenuItems: public extensions::IMenuItems
 			item.Title = _wcsdup(scripts[i].c_str());
 			item.UserData = (extensions::cookie_t)i;
 			item.Handler = [i, scripts](extensions::cookie_t) {
-				RunNodeScript(scripts[i]);
+				RunNodeFilter(scripts[i]);
 			};
 			item.SubItems = nullptr;
 			m_items.push_back(item);
@@ -261,8 +189,6 @@ bool __stdcall pn_init_extension(int iface_version, extensions::IPN* pn) {
 		return false;
 
 	g_pn = pn;
-	g_stopPipeThread = false;
-	std::thread(PipeServerThread).detach();
 
 	extensions::IAppEventSinkPtr sink(new PNSEventSink());
 	g_pn->AddEventSink(sink);
@@ -270,20 +196,6 @@ bool __stdcall pn_init_extension(int iface_version, extensions::IPN* pn) {
 	std::vector<std::wstring> scripts = GetScriptsFromFolder(L"scripts");
 	PNSMenuItems* menuItems = new PNSMenuItems(scripts);
 	g_pn->AddPluginMenuItems(menuItems);
-
-	// You can control various basic functionality right from the pn instance:
-
-	// pn->NewDocument(NULL);
-	// pn->OpenDocument("Sample.cpp", "java"); // Open Sample.cpp with the java scheme
-	// pn->OpenDocument("Sample.cpp", NULL);   // Open Sample.cpp with the default scheme for *.cpp
-	// pn->GetCurrentDocument()->GetFileName();
-
-	// Documents have events too:
-
-	// extensions::IDocumentEventSinkPtr docSink(new DocEvents(pn->GetCurrentDocument()));
-	// pn->GetCurrentDocument()->AddEventSink(docSink);
-	// extensions::IDocumentEventSinkPtr editSink(new EditEvents(pn->GetCurrentDocument()));
-	// pn->GetCurrentDocument()->AddEventSink(editSink);
 
 	return true;
 }
@@ -296,15 +208,7 @@ void __declspec(dllexport) __stdcall pn_get_extension_info(PN::BaseString& name,
 
 void __declspec(dllexport) __stdcall pn_exit_extension()
 {
-	g_stopPipeThread = true;
-
-	std::lock_guard<std::mutex> lock(g_clientMutex);
-	for (auto h : g_clientThreads)
-	{
-		CancelIo(h);
-		CloseHandle(h);
-	}
-	g_clientThreads.clear();
+	//
 }
 
 BOOL APIENTRY DllMain( HMODULE hModule,
