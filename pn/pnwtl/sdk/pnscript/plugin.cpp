@@ -19,6 +19,8 @@ std::string RunNodeScript(const std::wstring& scriptPath, const std::string& inp
 	PathRemoveFileSpec(exePath);
 	std::wstring fullPath = exePath + std::wstring(L"\\") + scriptPath;
 
+	std::wstring packagesPath = std::wstring(L"NODE_PATH=") + exePath + std::wstring(L"\\scripts\\node_packages");
+
 	wchar_t tempPath[MAX_PATH];
 	if (!GetTempPathW(MAX_PATH, tempPath))
 		return "ERROR: Failed to get temp path\n";
@@ -31,6 +33,11 @@ std::string RunNodeScript(const std::wstring& scriptPath, const std::string& inp
 	ofs.write(inputText.data(), inputText.size());
 	ofs.close();
 
+	std::vector<wchar_t> packagesBuf(packagesPath.begin(), packagesPath.end());
+	packagesBuf.push_back(0);
+	_wputenv(packagesBuf.data());
+
+	// TODO: support custom languages via config
 	std::wstring cmd = L"node.exe \"" + fullPath + L"\" \"" + std::wstring(tempIn) + L"\" \"" + std::wstring(tempOut) + L"\"";
 	std::vector<wchar_t> cmdBuf(cmd.begin(), cmd.end());
 	cmdBuf.push_back(0);

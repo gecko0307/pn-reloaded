@@ -1,4 +1,11 @@
 ========================================
+Release Name: 2.7.0
+Build: 2.7.0, Version Label: Reloaded
+========================================
+New features:
+- PNScript - a Node.js scripting extension which makes possible to run JavaScript inside the editor.
+
+========================================
 Release Name: 2.6.1
 Build: 2.6.1, Version Label: Reloaded
 ========================================

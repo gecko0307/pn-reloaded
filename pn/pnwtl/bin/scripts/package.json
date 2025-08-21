@@ -1,0 +1,12 @@
+{
+  "name": "pnscript",
+  "version": "1.0.0",
+  "description": "",
+  "main": "uppercase.js",
+  "scripts": {},
+  "author": "",
+  "license": "Public Domain",
+  "dependencies": {
+    "xml-formatter": "^3.6.6"
+  }
+}

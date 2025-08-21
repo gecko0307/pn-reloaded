@@ -57,7 +57,6 @@ output/
 pnwtl/bin/*.exe
 pnwtl/bin/*.py
 pnwtl/bin/pypn
-pnwtl/bin/scripts
 pnwtl/bin/dep.txt
 pnwtl/bin/pndepcheck.manifest
 pnwtl/bin/*.iobj

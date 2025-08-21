@@ -38,3 +38,5 @@ const outputFile = process.argv[3];
 const input = fs.readFileSync(inputFile, "utf8");
 fs.writeFileSync(outputFile, input.toUpperCase());
 ```
+
+It is possible to add custom NPM packages, simply go to the `scripts` folder and run `npm install <package>` there.
