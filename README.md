@@ -26,7 +26,7 @@ PN Reloaded features pnscript.dll, an extension that makes possible to run JavaS
 
 PNScript looks for *.js files in `scripts` folder. Each script is registered in Extensions menu.
 
-Scripts work as text filters. PNScript saves the current document to a temporary file and sends its path as an argument, as well as the output file path. THe output is then fed to the newly opened document.
+Scripts work as text filters. PNScript saves the current document to a temporary file and sends its path as an argument, as well as the output file path. The output is then fed to the newly opened document.
 
 The following example implements an uppercase filter:
 
