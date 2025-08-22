@@ -89,6 +89,7 @@ void Options::loadCache()
 	cache[ODefaultEncoding]			= Get(NULL, _T("DefaultEncoding"), eUnknown);
 	cache[OMultiByteCodePage]		= Get(NULL, _T("MultiByteCodePage"), PNCP_Default);
 	cache[OAutodetectIndentation]	= Get(NULL, _T("AutodetectIndentation"), TRUE);
+	cache[OUseUTF8]					= Get(NULL, _T("UseUTF8"), TRUE);
 	ungroup();
 	
 	// Interface Settings -------------------
@@ -165,6 +166,7 @@ void Options::saveCache()
 	Set(NULL, _T("DefaultEncoding"),		cache[ODefaultEncoding]);
 	Set(NULL, _T("MultiByteCodePage"),		cache[OMultiByteCodePage]);
 	Set(NULL, _T("AutodetectIndentation"),	cache[OAutodetectIndentation]);
+	Set(NULL, _T("UseUTF8"),				cache[OUseUTF8]);
 
 	ungroup();
 	

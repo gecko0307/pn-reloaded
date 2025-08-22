@@ -290,7 +290,8 @@ bool CTextView::OpenFile(LPCTSTR filename, EPNEncoding encoding)
 		}
 		
 		// Open ASCII files as UTF-8
-		if (m_encType == eUnknown) m_encType = eUtf8NoBOM;
+		if (OPTIONS->GetCached(Options::OUseUTF8))
+			if (m_encType == eUnknown) m_encType = eUtf8NoBOM;
 
 		EPNSaveFormat endings = determineLineEndings(reinterpret_cast<unsigned char*>(&data[0]), lenFile, m_encType);
 

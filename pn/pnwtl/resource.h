@@ -1,6 +1,6 @@
 //{{NO_DEPENDENCIES}}
-// Microsoft Visual C++ generated include file.
-// Used by pn.rc
+// Включаемый файл, созданный в Microsoft Visual C++.
+// Используется pn.rc
 //
 #define IDOK2                           3
 #define IDC_REPLACE_BUTTON              4
@@ -634,6 +634,7 @@
 #define IDC_EXTLINK                     1172
 #define IDC_ENABLEEXPLORERCONTEXT       1173
 #define IDC_CHECK2                      1174
+#define IDC_OPT_USEUTF8                 1174
 #define IDC_OPT_AUTODETECTINDENTATION   1175
 #define IDS_SHORTCUTS_SCRIPTS           1800
 #define IDS_HDR_FILETYPES_MATCH         1801

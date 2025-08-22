@@ -94,7 +94,8 @@ public:
 			ODefaultEncoding			= 39,
 			OMultiByteCodePage			= 40,
 			OAutodetectIndentation		= 41,
-			OPTION_COUNT				= 42
+			OUseUTF8					= 42,
+			OPTION_COUNT				= 43
 		} ECachedOption;
 
 		/// Set a bool value

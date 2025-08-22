@@ -44,6 +44,7 @@ class COptionsPageEditDefaults : public COptionsPageImpl<COptionsPageEditDefault
 			DDX_CHECK(IDC_OPT_LINEENDINGSCHECK,			m_bLineEndings)
 			DDX_CHECK(IDC_OPT_WHITESPACECHECK,			m_bWhiteSpace)
 			DDX_CHECK(IDC_OPT_AUTODETECTINDENTATION,	m_AutodetectIndentation)
+			DDX_CHECK(IDC_OPT_USEUTF8,					m_UseUTF8)
 		END_DDX_MAP()
 
 		virtual void OnOK();
@@ -63,6 +64,7 @@ class COptionsPageEditDefaults : public COptionsPageImpl<COptionsPageEditDefault
 		ECodePage		m_AnsiCodePage;
 		EPNEncoding		m_DefaultEncoding;
 		BOOL			m_AutodetectIndentation;
+		BOOL			m_UseUTF8;
 
 		COptionsBlockHeader m_defaultsHeader;
 };

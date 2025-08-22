@@ -22,7 +22,7 @@ Download [Boost 1.57](https://archives.boost.io/release/1.57.0/source/boost_1_57
 Open and build `pn/pnwtl/pn.sln`.
 
 ## Scripting via Node.js
-PN Reloaded features pnscript.dll, an extension that makes possible to run JavaScript inside the editor. This requires Node.js.
+PN Reloaded features pnscript.dll, an extension that allows to run JavaScript inside the editor. This requires Node.js.
 
 PNScript looks for *.js files in `scripts` folder. Each script is registered in Extensions menu.
 
