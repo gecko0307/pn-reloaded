@@ -84,6 +84,7 @@
 .sql=sql
 .ss=scheme
 .sty=latex
+.svg=xml
 .tcl=tcl
 .tex=latex
 .url=properties
