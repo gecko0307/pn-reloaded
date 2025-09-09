@@ -11,6 +11,7 @@ Changes from original PN:
 - *.exe files are now executed by double clicking in the file browser and project view;
 - Add Haskell, GLSL, HLSL, WGSL syntax highlighting schemes;
 - Support for JSON files (treated as JavaScript files for syntax highlighting);
+- Support for SVG files (treated as XML files for syntax highlighting);
 - Add Text Clip Creator and Project Template Editor to the distribution;
 - Add files necessary to build CHM help file using HTML Help Workshop;
 - PNScript - a Node.js scripting extension.
